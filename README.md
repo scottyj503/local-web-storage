@@ -153,8 +153,11 @@ const unsubscribe = subscribeToKey<User>(
 
 ### React Integration
 
+React bindings are available via a separate import to keep the core bundle small for vanilla JS users.
+
 ```typescript
-import { createStore, createStoreHooks } from 'local-web-storage';
+import { createStore } from 'local-web-storage';
+import { createStoreHooks } from 'local-web-storage/react';
 
 // Create store
 const store = createStore<AppState>({ dbName: 'my-app' });
@@ -182,7 +185,7 @@ function UserProfile() {
 
 ### Vanilla JavaScript
 
-```typescript
+```javascript
 import { createStore } from 'local-web-storage';
 
 const store = createStore({ dbName: 'my-app' });
@@ -264,6 +267,53 @@ This includes all modern browsers (Chrome, Firefox, Safari, Edge). No IE11 suppo
 3. **Cross-Tab**: BroadcastChannel ensures all tabs see the same state. Each tab maintains its own cache, synchronized via broadcast messages.
 
 4. **Micro Frontends**: CustomEvents on `window` allow independent applications to subscribe without sharing module scope. They only need to know the channel name.
+
+## Development
+
+### Project Structure
+
+```
+local-web-storage/
+├── src/                    # Library source
+│   ├── store.ts            # Core store implementation
+│   ├── react.ts            # React bindings (optional)
+│   └── index.ts            # Main exports
+├── test-app/               # Integration test app
+│   ├── src/sites/
+│   │   ├── site-a/         # Publisher micro site (vanilla JS)
+│   │   └── site-b/         # Subscriber micro site (vanilla JS)
+│   ├── tests/              # Playwright tests
+│   ├── index.html          # Host page
+│   └── package.json
+├── scripts/
+│   └── publish-local.sh    # Publish to local Verdaccio
+├── docker-compose.yml      # Verdaccio container
+└── package.json
+```
+
+### Testing with Verdaccio
+
+The test-app consumes the package from a local npm registry (Verdaccio) to validate the real publish/install flow.
+
+```bash
+# 1. Start Verdaccio (requires Docker)
+docker compose up -d
+
+# 2. Build, publish to Verdaccio, and install in test-app
+npm run test:pub
+
+# 3. Run Playwright tests
+cd test-app && npm test
+```
+
+### Test Coverage
+
+The Playwright tests verify:
+
+- **Pub/Sub**: Site A publishes → Site B receives via CustomEvent
+- **Multiple updates**: Subscriber receives all updates in order
+- **Delete/Clear**: Removing data notifies subscribers
+- **Persistence**: Data survives page reload via IndexedDB
 
 ## License
 

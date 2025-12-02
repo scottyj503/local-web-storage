@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>local-web-storage Test App</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    .container {
+      display: flex;
+      gap: 20px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .micro-site {
+      flex: 1;
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .micro-site h2 {
+      margin-top: 0;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #eee;
+    }
+    .site-a h2 { border-color: #4CAF50; }
+    .site-b h2 { border-color: #2196F3; }
+    button {
+      background: #333;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 5px 5px 5px 0;
+    }
+    button:hover {
+      background: #555;
+    }
+    input {
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      width: 100%;
+      margin-bottom: 10px;
+    }
+    .output {
+      background: #f9f9f9;
+      border: 1px solid #eee;
+      border-radius: 4px;
+      padding: 15px;
+      margin-top: 15px;
+      min-height: 60px;
+    }
+    .output label {
+      font-size: 12px;
+      color: #666;
+      text-transform: uppercase;
+    }
+    .output-value {
+      font-family: monospace;
+      margin-top: 5px;
+      word-break: break-all;
+    }
+    .log {
+      font-size: 12px;
+      color: #666;
+      margin-top: 10px;
+      max-height: 150px;
+      overflow-y: auto;
+    }
+    .log-entry {
+      padding: 2px 0;
+      border-bottom: 1px solid #eee;
+    }
+  </style>
+</head>
+<body>
+  <h1>local-web-storage Test App</h1>
+  <p style="text-align: center; color: #666;">Two micro sites sharing state via CustomEvent pub/sub</p>
+
+  <div class="container">
+    <!-- Micro Site A: Publisher -->
+    <div class="micro-site site-a">
+      <h2>Site A (Publisher)</h2>
+      <div id="site-a-root"></div>
+    </div>
+
+    <!-- Micro Site B: Subscriber -->
+    <div class="micro-site site-b">
+      <h2>Site B (Subscriber)</h2>
+      <div id="site-b-root"></div>
+    </div>
+  </div>
+
+  <!-- Load micro sites as separate scripts -->
+  <script type="module" src="/src/sites/site-a/index.js"></script>
+  <script type="module" src="/src/sites/site-b/index.js"></script>
+</body>
+</html>
